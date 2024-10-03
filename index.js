@@ -23,9 +23,31 @@ const data = [
 
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 const PORT = 3001;
 
 app.use(express.json());
+
+morgan.token("resbody", function (req, res) {
+  return JSON.stringify(req.body);
+});
+app.use(
+  morgan(
+    ":method :url :status :res[content-length] - :response-time ms content: :resbody"
+  )
+);
+
+function generateId() {
+  const existingIds = data.map((item) => item.id);
+
+  const newId = Math.floor(Math.random() * 1000) + 1;
+
+  if (existingIds.includes(newId)) {
+    return generateRandomUniqueId(data);
+  }
+
+  return newId;
+}
 
 app.get("/api/persons", (req, res) => {
   res.json(data);
@@ -53,6 +75,37 @@ app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   data.filter((person) => person.id !== id);
   res.send(204).end();
+});
+
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+
+  if (!body) {
+    res.status(400).json({
+      error: "content missing",
+    });
+  }
+
+  if (!body.number) {
+    res.status(400).json({
+      error: "Number is missing",
+    });
+  }
+
+  if (data.some((person) => person.name === body.name)) {
+    res.status(400).json({
+      error: "Name already in phonebook",
+    });
+  }
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number,
+  };
+
+  data.concat(person);
+  res.json(person);
 });
 
 app.listen(PORT, () => {
