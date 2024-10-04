@@ -23,10 +23,12 @@ const data = [
 
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const morgan = require("morgan");
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use(cors());
 
 morgan.token("resbody", function (req, res) {
   return JSON.stringify(req.body);
@@ -74,7 +76,7 @@ app.get("/api/persons/:id", (req, res) => {
 app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   data.filter((person) => person.id !== id);
-  res.send(204).end();
+  res.sendStatus(204).end();
 });
 
 app.post("/api/persons", (req, res) => {
