@@ -5,6 +5,9 @@ POST http://localhost:3001/api/persons/ HTTP/1.1
 content-type: application/json
 
 {
-    "name": "sample",
-    "number": 1623434
+    "name": "sample 2",
+    "number": 1623434343
 }
+
+###
+DELETE http://localhost:3001/api/persons/6703f9fafefa8548cba255e0
