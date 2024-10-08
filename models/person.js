@@ -3,17 +3,15 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
 const url = process.env.MONGODB_URI;
-const urlWithoutPw = process.env.MONGODB_URI_NO_PW;
-
-console.log("connecting to", urlWithoutPw);
 
 mongoose
   .connect(url)
-
-  .then((result) => {
+  .then(() => {
+    // eslint-disable-next-line no-console
     console.log("connected to MongoDB");
   })
   .catch((error) => {
+    // eslint-disable-next-line no-console
     console.log("error connecting to MongoDB:", error.message);
   });
 

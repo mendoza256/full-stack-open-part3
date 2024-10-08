@@ -1,8 +1,6 @@
-const res = require("express/lib/response");
 const mongoose = require("mongoose");
 
 if (process.argv.length < 3) {
-  console.log("give password as argument");
   process.exit(1);
 }
 
@@ -33,6 +31,7 @@ const Person = mongoose.model("Person", personSchema, "persons");
 if (!name && !number) {
   Person.find({}).then((result) => {
     result.forEach((person) => {
+      // eslint-disable-next-line no-console
       console.log(person.name, person.number);
     });
     mongoose.connection.close();
@@ -43,8 +42,7 @@ if (!name && !number) {
     number,
   });
 
-  person.save().then((result) => {
-    console.log(`Added ${name} number ${number} to phonebook`);
+  person.save().then(() => {
     mongoose.connection.close();
   });
 }

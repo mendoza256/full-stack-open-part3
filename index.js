@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("dist"));
 
-morgan.token("resbody", function (req, res) {
+morgan.token("resbody", function (req) {
   return JSON.stringify(req.body);
 });
 app.use(
@@ -21,11 +21,11 @@ app.use(
   )
 );
 
-app.get("/api/persons", (req, res) => {
+app.get("/api/persons", (res) => {
   Person.find({}).then((persons) => res.json(persons));
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", (res) => {
   Person.find({}).then((entries) => {
     const html = `<p>Phonebook has info on ${
       entries.length
@@ -35,7 +35,6 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
-  const id = req.params.id;
   Person.findById(req.params.id)
     .then((person) => {
       if (person) {
@@ -49,16 +48,14 @@ app.get("/api/persons/:id", (req, res, next) => {
 
 app.delete("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
-    .then((result) => {
+    .then(() => {
       res.status(204).end();
     })
     .catch((error) => next(error));
 });
 
 app.post("/api/persons", (req, res, next) => {
-  console.log("posting person");
   const body = req.body;
-  console.log("body:", body);
 
   if (body === undefined) {
     res.status(400).json({
@@ -108,5 +105,6 @@ app.use(unknownEndpoint);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`Server running on port ${PORT}`);
 });
